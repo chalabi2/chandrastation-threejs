@@ -1,48 +1,57 @@
-import React, { useRef, useMemo, useState, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { PerspectiveCamera, OrbitControls } from "@react-three/drei";
-import { PointLight, TextureLoader, MeshPhongMaterial, MeshBasicMaterial, SphereGeometry, HemisphereLight, DirectionalLight  } from "three";
-import moonText from "../textures/8k_moon.jpg"
-import sunText from "../textures/8k_sun.jpg"
-import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Points } from 'three';
+import React, { useRef, useEffect } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { PerspectiveCamera, OrbitControls, useGLTF } from "@react-three/drei";
+import { CanvasTexture } from "three";
+import moonModel from "../blender/moon.glb"
+import sunModel from "../blender/sun.glb"
+import { BufferGeometry, Float32BufferAttribute, PointsMaterial } from 'three';
+import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing';
+import { Color } from "three";
 
 const Moon = () => {
+  const gltf = useGLTF(moonModel);
+  useEffect(() => {
+    gltf.scene.scale.set(0.11, 0.11, 0.11);
+  }, [gltf]);
+
   const meshRef = useRef();
-  const textureURL = moonText;
-  const displacementURL = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/ldem_3_8bit.jpg";
-
-  const texture = useMemo(() => new TextureLoader().load(textureURL), [textureURL]);
-  const displacementMap = useMemo(() => new TextureLoader().load(displacementURL), [displacementURL]);
-
-  const material = new MeshPhongMaterial({
-  color: 0xffffff,
-  map: texture,
-  displacementMap: displacementMap,
-  displacementScale: 0.06,
-  bumpMap: displacementMap,
-  bumpScale: 0.04,
-  reflectivity: 0,
-  shininess: 0,
-  emissive: 0xffffff, // Makes the material self-illuminate
-  emissiveIntensity: 0.5, // Controls the strength of the self-illumination
-});
 
   useFrame(({ clock }) => {
-    meshRef.current.rotation.y = clock.getElapsedTime() * 0.002;
-    meshRef.current.rotation.x = 3.1415 * 0.02;
+    meshRef.current.rotation.y += 0.0005;
+    meshRef.current.rotation.x += 0.0005;
   });
+  
 
   return (
-    <mesh ref={meshRef} material={material}>
-      <sphereGeometry args={[2, 60, 60]} />
-    </mesh>
+    <primitive
+      ref={meshRef}
+      object={gltf.scene}
+      position={[0, 0, -5]}
+      scale={0.02}
+    />
   );
 };
 
+const createRoundTexture = () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
 
-const Stars = () => {
-  const particleCount = 50000;
-  const radius = 10000;
+  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.9)');
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 64, 64);
+
+  return new CanvasTexture(canvas);
+};
+
+const Starz = () => {
+  const particleCount = 2000;
+  const radius = 5000;
 
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
@@ -72,24 +81,18 @@ const Stars = () => {
   geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
   geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
 
+  const texture = createRoundTexture();
+
   const material = new PointsMaterial({
-    size: 5,
+    size: 6,
     sizeAttenuation: true,
     vertexColors: true,
     transparent: true,
-    opacity: 1
+    opacity: 1,
+    map: texture,
   });
 
   const starsRef = useRef();
-  const lights = useMemo(() => [], []);
-
-  useEffect(() => {
-    for (let i = 0; i < particleCount; i++) {
-      const light = new PointLight(0xffffff, 1, 1000);
-      lights.push(light);
-      starsRef.current.add(light);
-    }
-  }, []);
 
   return (
     <group ref={starsRef}>
@@ -98,57 +101,53 @@ const Stars = () => {
   );
 };
 
-
-const CustomDirectionalLight = () => {
-  const { scene } = useThree();
-  const light = new DirectionalLight(0xffffff, 0.5);
-  light.position.set(1, 1, 1);
-  scene.add(light);
-  return null;
-};
-
-
-// Custom HemisphereLight component
-const CustomHemisphereLight = (props) => {
-  const { scene } = useThree();
-  const light = new HemisphereLight(0xffffff, 0xffffff, 0.05);
-  scene.add(light);
-
-  return null;
-};
-
-
 const Sun = () => {
-  const textureURL = sunText;
-  const texture = useMemo(() => new TextureLoader().load(textureURL), [textureURL]);
+  const gltf = useGLTF(sunModel);
 
-  const meshRef = useRef();
-
-  useFrame(({ clock }) => {
-    meshRef.current.rotation.x += 0.001;
-    meshRef.current.rotation.y += 0.002;
-  });
-
-  const material = new MeshPhongMaterial({
-    map: texture,
-    emissive: 0xffffff,
-    emissiveMap: texture,
-    emissiveIntensity: 1,
-    shininess: 100,
-  });
+  useEffect(() => {
+    gltf.scene.rotation.x = Math.PI;
+    gltf.scene.scale.set(4, 4, 4);
+    gltf.scene.traverse((child) => {
+      if (child.isMesh) {
+        child.material.emissive = new Color(0xffee88);
+        child.material.emissiveIntensity = 5;
+      }
+    });
+  }, [gltf]);
 
   return (
     <>
-      <mesh ref={meshRef} position={[0, 0, -10000]}>
-        <sphereGeometry args={[500, 64, 64]} />
-        <meshPhongMaterial {...material} />
-      </mesh>
-      <pointLight color={0xffffff} intensity={1} distance={5000} position={[0, 0, -10000]} />
+      <primitive object={gltf.scene} position={[0, 0, -2000]} />
+      <pointLight
+        color={0xffffff}
+        intensity={2}
+        distance={500}
+        decay={2}
+        position={[0, 0, -190]}
+      />
+       <EffectComposer>
+        <Bloom
+          kernelSize={3}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.5}
+          intensity={1.5}
+        />
+        <DepthOfField
+          focusDistance={0.02}
+          focalLength={0.5}
+          bokehScale={2}
+          height={480}
+        />
+      </EffectComposer>
     </>
   );
 };
 
+
 const MoonScene = () => {
+  const cameraRef = useRef();
+  
+
   return (
     <Canvas
       style={{ position: "absolute", top: 0, left: 0 }}
@@ -158,15 +157,36 @@ const MoonScene = () => {
         gl.setClearColor("black");
       }}
     >
-      <PerspectiveCamera makeDefault position={[0, 0, 8]} />
-      <OrbitControls enableZoom={true} enablePan={true} panSpeed={0.5} />
-      <CustomDirectionalLight />
-      <CustomHemisphereLight />
+      <PerspectiveCamera ref={cameraRef} makeDefault position={[120, 10, 100]} far={50000} />
+      <OrbitControls
+        camera={cameraRef.current}
+        target={[0, 0, -5]}
+        enableZoom={true}
+        enablePan={true}
+        panSpeed={0.5}
+        minDistance={10}
+        maxDistance={400}
+      />
       <Sun />
       <Moon />
-      <Stars />
+      <Starz />
+      <EffectComposer>
+        <Bloom
+          kernelSize={3}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.5}
+          intensity={1.5}
+        />
+        <DepthOfField
+          focusDistance={0.02}
+          focalLength={0.5}
+          bokehScale={2}
+          height={480}
+        />
+      </EffectComposer>
     </Canvas>
   );
 };
+
 
 export default MoonScene;
