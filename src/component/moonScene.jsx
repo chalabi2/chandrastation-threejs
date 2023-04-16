@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Html } from "@react-three/drei";
+import { CircleBufferGeometry, MeshBasicMaterial, DoubleSide, Vector3, Box3 } from "three";
+import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line } from "@react-three/drei";
 import moonModel from "../blender/lune.glb"
 import sunModel from "../blender/sun.glb"
 import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureLoader, CanvasTexture } from 'three';
@@ -24,9 +25,9 @@ const FlickeringText = () => {
     letterSpacing={1}
       font='Futura'
       ref={textRef}
-      position={[0, 2, -7.5]} // Adjust this to position the text closer to the Moon's surface
+      position={[0, 0.7, -0.8]} // Adjust this to position the text closer to the Moon's surface
       rotation={[0, Math.PI, 0]} // Rotate the text around the Y-axis by 180 degrees
-      fontSize={0.2} // Make the text smaller
+      fontSize={0.1} // Make the text smaller
       color="#00FFFF" // Saturated neon cyan color
       outlineWidth={0.001}
       outlineColor="#ffffff"
@@ -39,7 +40,8 @@ const FlickeringText = () => {
   );
 };
 
-const CraterButton = ({ points, onClick, label }) => {
+
+const CraterButtonBlog = ({ points, onClick, label }) => {
   const [hover, setHover] = useState(false);
 
   const onMouseEnter = () => {
@@ -50,35 +52,53 @@ const CraterButton = ({ points, onClick, label }) => {
     setHover(false);
   };
 
+  const boundingBox = new Box3().setFromPoints(points);
+  const center = boundingBox.getCenter(new Vector3());
+  const size = boundingBox.getSize(new Vector3());
+  const radius = Math.max(size.x, size.y) / 2;
+
+  const geometry = new CircleBufferGeometry(radius, 32);
+  const material = new MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    side: DoubleSide,
+  });
+
   return (
     <group
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onPointerEnter={onMouseEnter}
+      onPointerLeave={onMouseLeave}
       onClick={onClick}
     >
       <Line
         points={points}
         color={hover ? "cyan" : "white"}
-        lineWidth={0.3}
-        position={[-1, 0, 1]}
-        rotation={[0, Math.PI, 0]}
+        lineWidth={0.8}
+        position={[-0.6, -0.35, -0.72] }
+        rotation={[-0.45, 0.68, 0]}
+      />
+      <mesh
+        geometry={geometry}
+        material={material}
+        position={[-0.6 + center.x, -0.35 + center.y, -0.72]}
+        rotation={[-0.45, 0.68, 0]}
       />
       {hover && (
-        <Html center>
-          <div
-            style={{
-              backgroundColor: "rgba(0, 255, 255, 0.7)",
-              padding: "0.2rem",
-              borderRadius: "5px",
-            }}
-          >
-            {label}
-          </div>
-        </Html>
+        <Text
+        position={[-0.63 + center.x, -0.356 + center.y, -0.75]}
+        rotation={[-0, 10, 0]}
+        fontSize={0.02}
+        letterSpacing={1}
+        anchorX="center"
+        anchorY="middle"
+        >
+          BLOG
+        </Text>
       )}
     </group>
   );
 };
+
 
 const Moon = () => {
   const gltf = useGLTF(moonModel);
@@ -87,6 +107,13 @@ const Moon = () => {
   }, [gltf]);
 
   const meshRef = useRef();
+
+  useFrame(({ clock }) => {
+    gltf.scene.rotation.y = Math.PI;
+   meshRef.current.rotation.y += 0.0005;
+   
+  // meshRef.current.rotation.x += 0.0005;
+  });
 
   
   const handleClick = () => {
@@ -114,7 +141,8 @@ const Moon = () => {
       position={[0, 0, -5]}
       scale={0.02}
     >
-<CraterButton points={points} onClick={handleClick} label="Button" />
+            <FlickeringText/>
+<CraterButtonBlog points={points} onClick={handleClick} label="Blog" />
 
     </primitive>
     
@@ -126,9 +154,23 @@ const Earth = () => {
   const earthTexture = textureLoader.load(earthTextureURL);
 
   return (
-    <mesh position={[0, 400, 2000]} scale={10}>
+    <mesh position={[0, 400, -2000]} scale={10}>
       <sphereBufferGeometry args={[5, 32, 32]} />
       <meshStandardMaterial map={earthTexture} />
+      <EffectComposer>
+        <Bloom
+          kernelSize={3}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.5}
+          intensity={1.5}
+        />
+        <DepthOfField
+          focusDistance={0.02}
+          focalLength={0.5}
+          bokehScale={2}
+          height={480}
+        />
+      </EffectComposer>
     </mesh>
   );
 };
@@ -219,13 +261,13 @@ const Sun = () => {
 
   return (
     <>
-      <primitive object={gltf.scene} position={[0, 0, -2000]} />
+      <primitive object={gltf.scene} position={[0, 0, 2000]} />
       <pointLight
         color={0xffffff}
         intensity={1}
         distance={5000}
         decay={2}
-        position={[0, 0, -190]}
+        position={[0, 0, 190]}
       />
        <EffectComposer>
         <Bloom
@@ -255,11 +297,18 @@ const MoonScene = () => {
       style={{ position: "absolute", top: 0, left: 0 }}
       useSetBackgroundColor
       size={{ width: window.innerWidth, height: window.innerHeight }}
+      antialias 
       onCreated={({ gl }) => {
         gl.setClearColor("black");
       }}
     >
-      <PerspectiveCamera ref={cameraRef} makeDefault position={[-25, -15, 30]} far={50000} />
+      <PerspectiveCamera
+  ref={cameraRef}
+  makeDefault
+  position={[0, 0, 10]}
+  far={50000}
+/>
+
       <OrbitControls
         camera={cameraRef.current}
         target={[0, 0, -5]}
@@ -271,7 +320,7 @@ const MoonScene = () => {
       />
       <Sun />
       <Moon />
-      <FlickeringText/>
+
       <Earth/>
       <Starz />
       <EffectComposer>
