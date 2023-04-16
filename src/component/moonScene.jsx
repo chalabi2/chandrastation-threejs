@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CircleBufferGeometry, MeshBasicMaterial, DoubleSide, Vector3, Box3 } from "three";
-import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Html } from "@react-three/drei";
+import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line } from "@react-three/drei";
 import moonModel from "../blender/lune.glb"
 import sunModel from "../blender/sun.glb"
 import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureLoader, CanvasTexture } from 'three';
@@ -86,7 +86,7 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
       {hover && (
         <Text
         position={[-0.63 + center.x, -0.356 + center.y, -0.75]}
-        rotation={[-0, 180, 0]}
+        rotation={[-0, 10, 0]}
         fontSize={0.02}
         letterSpacing={1}
         anchorX="center"
@@ -109,8 +109,10 @@ const Moon = () => {
   const meshRef = useRef();
 
   useFrame(({ clock }) => {
+    gltf.scene.rotation.y = Math.PI;
    meshRef.current.rotation.y += 0.0005;
-   meshRef.current.rotation.x += 0.0005;
+   
+  // meshRef.current.rotation.x += 0.0005;
   });
 
   
@@ -152,7 +154,7 @@ const Earth = () => {
   const earthTexture = textureLoader.load(earthTextureURL);
 
   return (
-    <mesh position={[0, 400, 2000]} scale={10}>
+    <mesh position={[0, 400, -2000]} scale={10}>
       <sphereBufferGeometry args={[5, 32, 32]} />
       <meshStandardMaterial map={earthTexture} />
       <EffectComposer>
@@ -259,13 +261,13 @@ const Sun = () => {
 
   return (
     <>
-      <primitive object={gltf.scene} position={[0, 0, -2000]} />
+      <primitive object={gltf.scene} position={[0, 0, 2000]} />
       <pointLight
         color={0xffffff}
         intensity={1}
         distance={5000}
         decay={2}
-        position={[0, 0, -190]}
+        position={[0, 0, 190]}
       />
        <EffectComposer>
         <Bloom
@@ -300,7 +302,13 @@ const MoonScene = () => {
         gl.setClearColor("black");
       }}
     >
-      <PerspectiveCamera ref={cameraRef} makeDefault position={[-25, -15, 30]} far={50000} />
+      <PerspectiveCamera
+  ref={cameraRef}
+  makeDefault
+  position={[0, 0, 10]}
+  far={50000}
+/>
+
       <OrbitControls
         camera={cameraRef.current}
         target={[0, 0, -5]}

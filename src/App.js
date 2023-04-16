@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MoonScene from "./component/moonScene";
 import LoadingScreen from "./loading";
+import Menu from "./component/menu";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,7 @@ function App() {
 
   return (
     <div>
+      <Menu/>
       <div
         style={{
           position: "absolute",
