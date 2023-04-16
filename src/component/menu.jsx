@@ -17,9 +17,7 @@ const Menu = () => {
           <span></span>
         </div>
       )}
-      <div
-        className={`menu-overlay ${isOpen ? 'visible' : 'hidden'}`}
-      >
+      <div className={`menu-overlay ${isOpen ? 'visible' : 'hidden'}`}>
         <div className="menu-close" onClick={handleToggle}>
           &times;
         </div>
