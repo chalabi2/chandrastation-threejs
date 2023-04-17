@@ -25,7 +25,7 @@ const Menu = () => {
         <div className="menu">
           <ul>
           <li>
-              <Link to="/" onClick={handleToggle}>
+              <Link to="/moon-station" onClick={handleToggle}>
                 Moon Station
               </Link>
             </li>

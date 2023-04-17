@@ -9,6 +9,7 @@ import { EffectComposer, Bloom, DepthOfField, Noise, Vignette } from '@react-thr
 import earthTextureURL from '../blender/8k_earth_daymap.jpg'
 import * as THREE from 'three';
 import { gsap } from "gsap";
+import LoadingScreen from "./loading/loading";
 
 const FlickeringText = () => {
   const textRef = useRef();
@@ -552,8 +553,38 @@ const AnimatedCamera = () => {
 
 const MoonScene = () => {
   const cameraRef = useRef();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // Change this value to control the duration of the loading screen
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   return (
+    <div
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "black",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+      pointerEvents: loading ? "auto" : "none",
+      transform: loading ? "scale(1)" : "scale(1.1)",
+      transition: "opacity 20s cubic-bezier(0.23, 1, 0.32, 1), transform 20s cubic-bezier(0.23, 1, 0.32, 1)",
+    }}
+  >
+    {loading && <LoadingScreen />}
+
     <Canvas
     frameloop="demand"
       style={{ position: "absolute", top: 0, left: 0 }}
@@ -587,6 +618,7 @@ const MoonScene = () => {
       </EffectComposer>
       <Stats />
     </Canvas>
+    </div>
   );
 };
 
