@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MoonScene from "./component/moonScene";
-import LoadingScreen from "./loading";
-import Menu from "./component/menu";
+import LoadingScreen from "./component/loading/loading";
+import Menu from "./component/menu/menu";
+import ArticleList from "./pages/blog";
+import Contact from "./pages/contact";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -17,31 +20,36 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <Menu />
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundColor: "black",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 1000,
-          opacity: loading ? 1 : 0,
-          pointerEvents: loading ? "auto" : "none",
-          transform: loading ? "scale(1)" : "scale(1.1)",
-          transition: "opacity 15s cubic-bezier(0.23, 1, 0.32, 1), transform 15s cubic-bezier(0.23, 1, 0.32, 1)",
-        }}
-      >
-        {loading && <LoadingScreen />}
+    <Router>
+      <div>
+        <Menu />
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "black",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            opacity: loading ? 1 : 0,
+            pointerEvents: loading ? "auto" : "none",
+            transform: loading ? "scale(1)" : "scale(1.1)",
+            transition: "opacity 15s cubic-bezier(0.23, 1, 0.32, 1), transform 15s cubic-bezier(0.23, 1, 0.32, 1)",
+          }}
+        >
+          {loading && <LoadingScreen />}
+        </div>
+        <Routes>
+          <Route path="/" element={<MoonScene />} />
+          <Route path="/blog" element={<ArticleList />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
       </div>
-      <MoonScene />
-      {/* Add other components here */}
-    </div>
+    </Router>
   );
 }
 
