@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CircleBufferGeometry, MeshBasicMaterial, DoubleSide, Vector3, Box3 } from "three";
-import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line } from "@react-three/drei";
+import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Stats } from "@react-three/drei";
 import moonModel from "../blender/lune.glb"
 import sunModel from "../blender/sun.glb"
 import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureLoader, CanvasTexture } from 'three';
-import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, DepthOfField, Noise, Vignette } from '@react-three/postprocessing';
 import earthTextureURL from '../blender/8k_earth_daymap.jpg'
 import * as THREE from 'three';
+import { gsap } from "gsap";
 
 const FlickeringText = () => {
   const textRef = useRef();
@@ -25,9 +26,9 @@ const FlickeringText = () => {
     letterSpacing={1}
       font='Futura'
       ref={textRef}
-      position={[0, 0.7, -0.8]} // Adjust this to position the text closer to the Moon's surface
-      rotation={[0, Math.PI, 0]} // Rotate the text around the Y-axis by 180 degrees
-      fontSize={0.1} // Make the text smaller
+      position={[0, 2, -2]} // Adjust this to position the text closer to the Moon's surface
+      rotation={[0, 0, 0]} // Rotate the text around the Y-axis by 180 degrees
+      fontSize={0.3} // Make the text smaller
       color="#00FFFF" // Saturated neon cyan color
       outlineWidth={0.001}
       outlineColor="#ffffff"
@@ -44,6 +45,20 @@ const FlickeringText = () => {
 const CraterButtonBlog = ({ points, onClick, label }) => {
   const [hover, setHover] = useState(false);
 
+  // Define the spherical coordinates
+  const moonRadius = -1.02; // The moon's radius + some offset to make the items hug the moon
+  const polarAngle = Math.PI / 1; // In radians
+  const azimuthalAngle = Math.PI / 1; // In radians
+
+  // Convert the spherical coordinates to Cartesian coordinates
+  const position = new THREE.Vector3(
+    moonRadius * Math.sin(polarAngle) * Math.cos(azimuthalAngle),
+    moonRadius * Math.sin(polarAngle) * Math.sin(azimuthalAngle),
+    moonRadius * Math.cos(polarAngle)
+  );
+
+  const textOffset = new THREE.Vector3(0, 0, 0.01);
+
   const onMouseEnter = () => {
     setHover(true);
   };
@@ -59,13 +74,15 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
 
   const geometry = new CircleBufferGeometry(radius, 32);
   const material = new MeshBasicMaterial({
+    color: "grey",
     transparent: true,
-    opacity: 0,
+    opacity: 0.001,
     side: DoubleSide,
   });
 
   return (
     <group
+      position={position.toArray()}
       onPointerEnter={onMouseEnter}
       onPointerLeave={onMouseLeave}
       onClick={onClick}
@@ -73,26 +90,241 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
       <Line
         points={points}
         color={hover ? "cyan" : "white"}
-        lineWidth={0.8}
-        position={[-0.6, -0.35, -0.72] }
-        rotation={[-0.45, 0.68, 0]}
+        lineWidth={2}
       />
       <mesh
         geometry={geometry}
         material={material}
-        position={[-0.6 + center.x, -0.35 + center.y, -0.72]}
-        rotation={[-0.45, 0.68, 0]}
+        position={center.toArray()}
       />
       {hover && (
         <Text
-        position={[-0.63 + center.x, -0.356 + center.y, -0.75]}
-        rotation={[-0, 10, 0]}
-        fontSize={0.02}
-        letterSpacing={1}
-        anchorX="center"
-        anchorY="middle"
+        color="#00FFFF"
+          position={center.clone().add(textOffset).toArray()} // Add the offset to the text's position
+          fontSize={0.015}
+          letterSpacing={1}
+          anchorX="center"
+          anchorY="middle"
         >
           BLOG
+        </Text>
+      )}
+    </group>
+  );
+};
+
+const CraterButtonContact = ({ points, onClick, label }) => {
+  const [hover, setHover] = useState(false);
+
+  // Define the spherical coordinates
+  const moonRadius = 1.01; // The moon's radius + some offset to make the items hug the moon
+  const polarAngle = Math.PI * 0.49; // In radians, adjusted for the bottom position
+  const azimuthalAngle = 1.55; // In radians, adjusted for the bottom position
+
+  // Convert the spherical coordinates to Cartesian coordinates
+  const position = new THREE.Vector3(
+    moonRadius * Math.sin(polarAngle) * Math.cos(azimuthalAngle),
+    moonRadius * Math.sin(polarAngle) * Math.sin(azimuthalAngle),
+    moonRadius * Math.cos(polarAngle)
+  );
+
+  const textOffset = new THREE.Vector3(0, 0.01, 0);
+
+  const onMouseEnter = () => {
+    setHover(true);
+  };
+
+  const onMouseLeave = () => {
+    setHover(false);
+  };
+
+  const boundingBox = new Box3().setFromPoints(points);
+  const center = boundingBox.getCenter(new Vector3());
+  const size = boundingBox.getSize(new Vector3());
+  const radius = Math.max(size.x, size.y) / 2;
+
+  const geometry = new CircleBufferGeometry(radius, 32);
+  const material = new MeshBasicMaterial({
+    color: "grey",
+    transparent: true,
+    opacity: 0.001,
+    side: DoubleSide,
+  });
+
+  return (
+    <group
+      position={position.toArray()}
+      onPointerEnter={onMouseEnter}
+      onPointerLeave={onMouseLeave}
+      onClick={onClick}
+    >
+      <Line
+        points={points}
+        color={hover ? "cyan" : "white"}
+        lineWidth={2}
+        rotation={[4.7,0,0]}
+      />
+      <mesh
+        geometry={geometry}
+        material={material}
+        position={center.toArray()}
+        rotation={[4.7,0,0]}
+      />
+      {hover && (
+        <Text
+        color="#00FFFF"
+          position={center.clone().add(textOffset).toArray()}
+          fontSize={0.015}
+          letterSpacing={1}
+          anchorX="center"
+          anchorY="middle"
+          rotation={[4.7,0,0]} // Rotate the text around the X-axis by 180 degrees (Math.PI radians)
+        >
+          CONTACT
+        </Text>
+      )}
+    </group>
+  );
+};
+
+const CraterButtonAbout = ({ points, onClick, label }) => {
+  const [hover, setHover] = useState(false);
+
+  // Define the spherical coordinates
+  const moonRadius = -1.01; // The moon's radius + some offset to make the items hug the moon
+  const polarAngle = Math.PI * 0.49; // In radians, adjusted for the bottom position
+  const azimuthalAngle = 1.55; // In radians, adjusted for the bottom position
+
+  // Convert the spherical coordinates to Cartesian coordinates
+  const position = new THREE.Vector3(
+    moonRadius * Math.sin(polarAngle) * Math.cos(azimuthalAngle),
+    moonRadius * Math.sin(polarAngle) * Math.sin(azimuthalAngle),
+    moonRadius * Math.cos(polarAngle)
+  );
+
+  const textOffset = new THREE.Vector3(0, -0.01, 0);
+
+  const onMouseEnter = () => {
+    setHover(true);
+  };
+
+  const onMouseLeave = () => {
+    setHover(false);
+  };
+
+  const boundingBox = new Box3().setFromPoints(points);
+  const center = boundingBox.getCenter(new Vector3());
+  const size = boundingBox.getSize(new Vector3());
+  const radius = Math.max(size.x, size.y) / 2;
+
+  const geometry = new CircleBufferGeometry(radius, 32);
+  const material = new MeshBasicMaterial({
+    color: "grey",
+    transparent: true,
+    opacity: 0.001,
+    side: DoubleSide,
+  });
+
+  return (
+    <group
+      position={position.toArray()}
+      onPointerEnter={onMouseEnter}
+      onPointerLeave={onMouseLeave}
+      onClick={onClick}
+    >
+      <Line
+        points={points}
+        color={hover ? "cyan" : "white"}
+        lineWidth={2}
+        rotation={[4.7,0,0]}
+      />
+      <mesh
+        geometry={geometry}
+        material={material}
+        position={center.toArray()}
+        rotation={[4.7,0,0]}
+      />
+      {hover && (
+        <Text
+        color="#00FFFF"
+          position={center.clone().add(textOffset).toArray()}
+          fontSize={0.015}
+          letterSpacing={1}
+          anchorX="center"
+          anchorY="middle"
+          rotation={[-4.7,0,0]} // Rotate the text around the X-axis by 180 degrees (Math.PI radians)
+        >
+          ABOUT
+        </Text>
+      )}
+    </group>
+  );
+};
+
+
+const CraterButtonServices = ({ points, onClick, label }) => {
+  const [hover, setHover] = useState(false);
+
+  // Define the spherical coordinates
+  const moonRadius = 1.02; // The moon's radius + some offset to make the items hug the moon
+  const polarAngle = Math.PI / 1; // In radians
+  const azimuthalAngle = Math.PI / 1.5; // In radians
+
+  // Convert the spherical coordinates to Cartesian coordinates
+  const position = new THREE.Vector3(
+    moonRadius * Math.sin(polarAngle) * Math.cos(azimuthalAngle),
+    moonRadius * Math.sin(polarAngle) * Math.sin(azimuthalAngle),
+    moonRadius * Math.cos(polarAngle)
+  );
+
+  const onMouseEnter = () => {
+    setHover(true);
+  };
+
+  const onMouseLeave = () => {
+    setHover(false);
+  };
+  const textOffset = new THREE.Vector3(0, 0, -0.01);
+  const boundingBox = new Box3().setFromPoints(points);
+  const center = boundingBox.getCenter(new Vector3());
+  const size = boundingBox.getSize(new Vector3());
+  const radius = Math.max(size.x, size.y) / 2;
+
+  const geometry = new CircleBufferGeometry(radius, 32);
+  const material = new MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    side: DoubleSide,
+  });
+
+  return (
+    <group
+      position={position.toArray()}
+      onPointerEnter={onMouseEnter}
+      onPointerLeave={onMouseLeave}
+      onClick={onClick}
+    >
+      <Line
+        points={points}
+        color={hover ? "cyan" : "white"}
+        lineWidth={2}
+      />
+      <mesh
+        geometry={geometry}
+        material={material}
+        position={center.toArray()}
+      />
+      {hover && (
+        <Text
+        color="#00FFFF"
+        position={center.clone().add(textOffset).toArray()}
+          fontSize={0.015}
+          letterSpacing={1}
+          anchorX="center"
+          anchorY="middle"
+          rotation={[0, Math.PI, 0]}
+        >
+          SERVICES
         </Text>
       )}
     </group>
@@ -108,11 +340,18 @@ const Moon = () => {
 
   const meshRef = useRef();
 
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y = -0.5;
+      meshRef.current.rotation.x = -0.5;
+    }
+  }, [meshRef]);
+
+
   useFrame(({ clock }) => {
-    gltf.scene.rotation.y = Math.PI;
    meshRef.current.rotation.y += 0.0005;
    
-  // meshRef.current.rotation.x += 0.0005;
+   meshRef.current.rotation.x += 0.0005;
   });
 
   
@@ -141,8 +380,10 @@ const Moon = () => {
       position={[0, 0, -5]}
       scale={0.02}
     >
-            <FlickeringText/>
 <CraterButtonBlog points={points} onClick={handleClick} label="Blog" />
+<CraterButtonServices points={points} onClick={handleClick} label="Services" />
+<CraterButtonContact points={points} onClick={handleClick} label="Contact" />
+<CraterButtonAbout points={points} onClick={handleClick} label="About" />
 
     </primitive>
     
@@ -152,9 +393,10 @@ const Moon = () => {
 const Earth = () => {
   const textureLoader = new TextureLoader();
   const earthTexture = textureLoader.load(earthTextureURL);
+  
 
   return (
-    <mesh position={[0, 400, -2000]} scale={10}>
+    <mesh position={[0, 0, -2000]} scale={10}>
       <sphereBufferGeometry args={[5, 32, 32]} />
       <meshStandardMaterial map={earthTexture} />
       <EffectComposer>
@@ -261,39 +503,59 @@ const Sun = () => {
 
   return (
     <>
-      <primitive object={gltf.scene} position={[0, 0, 2000]} />
+      <primitive object={gltf.scene} position={[0, 0, 3000]} />
       <pointLight
         color={0xffffff}
         intensity={1}
-        distance={5000}
+        distance={10000}
         decay={2}
         position={[0, 0, 190]}
       />
-       <EffectComposer>
-        <Bloom
-          kernelSize={3}
-          luminanceThreshold={0.1}
-          luminanceSmoothing={0.5}
-          intensity={1.5}
-        />
-        <DepthOfField
-          focusDistance={0.02}
-          focalLength={0.5}
-          bokehScale={2}
-          height={480}
-        />
-      </EffectComposer>
     </>
   );
 };
 
+const AnimatedCamera = () => {
+  const cameraRef = useRef();
+  const [animationInitialized, setAnimationInitialized] = useState(false);
+
+  useFrame(() => {
+    if (cameraRef.current && !animationInitialized) {
+      setAnimationInitialized(true);
+
+      const startPosition = new THREE.Vector3(100, 200, -400);
+      const endPosition = new THREE.Vector3(0, 0, 10);
+
+      cameraRef.current.position.copy(startPosition);
+
+      gsap.to(cameraRef.current.position, {
+        duration: 8,
+        x: endPosition.x,
+        y: endPosition.y,
+        z: endPosition.z,
+        onUpdate: () => {
+          cameraRef.current.updateProjectionMatrix();
+        },
+      });
+    }
+  });
+
+  return (
+    <PerspectiveCamera
+      ref={cameraRef}
+      makeDefault
+      position={[0, 0, 10]}
+      far={50000}
+    />
+  );
+};
 
 const MoonScene = () => {
   const cameraRef = useRef();
-  
 
   return (
     <Canvas
+    frameloop="demand"
       style={{ position: "absolute", top: 0, left: 0 }}
       useSetBackgroundColor
       size={{ width: window.innerWidth, height: window.innerHeight }}
@@ -302,13 +564,7 @@ const MoonScene = () => {
         gl.setClearColor("black");
       }}
     >
-      <PerspectiveCamera
-  ref={cameraRef}
-  makeDefault
-  position={[0, 0, 10]}
-  far={50000}
-/>
-
+<AnimatedCamera/>
       <OrbitControls
         camera={cameraRef.current}
         target={[0, 0, -5]}
@@ -320,22 +576,14 @@ const MoonScene = () => {
       />
       <Sun />
       <Moon />
-
+      <FlickeringText/>
       <Earth/>
       <Starz />
       <EffectComposer>
-        <Bloom
-          kernelSize={3}
-          luminanceThreshold={0.1}
-          luminanceSmoothing={0.5}
-          intensity={1.5}
-        />
-        <DepthOfField
-          focusDistance={0.02}
-          focalLength={0.5}
-          bokehScale={2}
-          height={480}
-        />
+        <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+        <Noise opacity={0.1} />
+        <Vignette eskil={false} offset={0.1} darkness={0.9} />
       </EffectComposer>
     </Canvas>
   );
