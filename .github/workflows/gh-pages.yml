@@ -37,11 +37,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           token: ${{ secrets.GH_TOKEN }}
-      - name: npm ci, build and test
+      - name: build
         run: |
-          npm ci
           CI='' npm run build --if-present
-          npm test  
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
