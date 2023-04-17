@@ -18,7 +18,7 @@ import React from "react";
           alignItems: "center",
           zIndex: 1000,
           opacity: 1,
-        transition: "opacity 3s cubic-bezier(0.23, 1, 0.32, 1), transform 1.5s cubic-bezier(0.23, 1, 0.32, 1)",
+        transition: "opacity 7s cubic-bezier(0.23, 1, 0.32, 1), transform 1.5s cubic-bezier(0.23, 1, 0.32, 1)",
         }}
       >
         <img src='./chandra.png' alt="Chandra Station" style={{ width: "300px" }} />
