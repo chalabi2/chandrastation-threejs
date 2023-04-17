@@ -585,7 +585,6 @@ const MoonScene = () => {
         <Noise opacity={0.1} />
         <Vignette eskil={false} offset={0.1} darkness={0.9} />
       </EffectComposer>
-      <Stats />
     </Canvas>
   );
 };
