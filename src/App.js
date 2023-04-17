@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div>
-      <Menu/>
+      <Menu />
       <div
         style={{
           position: "absolute",
@@ -34,7 +34,7 @@ function App() {
           opacity: loading ? 1 : 0,
           pointerEvents: loading ? "auto" : "none",
           transform: loading ? "scale(1)" : "scale(1.1)",
-        transition: "opacity 7s cubic-bezier(0.23, 1, 0.32, 1), transform 3s cubic-bezier(0.23, 1, 0.32, 1)",
+          transition: "opacity 15s cubic-bezier(0.23, 1, 0.32, 1), transform 15s cubic-bezier(0.23, 1, 0.32, 1)",
         }}
       >
         {loading && <LoadingScreen />}

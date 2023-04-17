@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CircleBufferGeometry, MeshBasicMaterial, DoubleSide, Vector3, Box3 } from "three";
-import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line } from "@react-three/drei";
+import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Stats } from "@react-three/drei";
 import moonModel from "../blender/lune.glb"
 import sunModel from "../blender/sun.glb"
 import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureLoader, CanvasTexture } from 'three';
@@ -9,7 +9,6 @@ import { EffectComposer, Bloom, DepthOfField, Noise, Vignette } from '@react-thr
 import earthTextureURL from '../blender/8k_earth_daymap.jpg'
 import * as THREE from 'three';
 import { gsap } from "gsap";
-import { useContext } from "react";
 
 const FlickeringText = () => {
   const textRef = useRef();
@@ -91,7 +90,7 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
       <Line
         points={points}
         color={hover ? "cyan" : "white"}
-        lineWidth={0.8}
+        lineWidth={2}
       />
       <mesh
         geometry={geometry}
@@ -100,6 +99,7 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
       />
       {hover && (
         <Text
+        color="#00FFFF"
           position={center.clone().add(textOffset).toArray()} // Add the offset to the text's position
           fontSize={0.015}
           letterSpacing={1}
@@ -161,7 +161,7 @@ const CraterButtonContact = ({ points, onClick, label }) => {
       <Line
         points={points}
         color={hover ? "cyan" : "white"}
-        lineWidth={0.8}
+        lineWidth={2}
         rotation={[4.7,0,0]}
       />
       <mesh
@@ -172,6 +172,7 @@ const CraterButtonContact = ({ points, onClick, label }) => {
       />
       {hover && (
         <Text
+        color="#00FFFF"
           position={center.clone().add(textOffset).toArray()}
           fontSize={0.015}
           letterSpacing={1}
@@ -234,7 +235,7 @@ const CraterButtonAbout = ({ points, onClick, label }) => {
       <Line
         points={points}
         color={hover ? "cyan" : "white"}
-        lineWidth={0.8}
+        lineWidth={2}
         rotation={[4.7,0,0]}
       />
       <mesh
@@ -245,6 +246,7 @@ const CraterButtonAbout = ({ points, onClick, label }) => {
       />
       {hover && (
         <Text
+        color="#00FFFF"
           position={center.clone().add(textOffset).toArray()}
           fontSize={0.015}
           letterSpacing={1}
@@ -305,7 +307,7 @@ const CraterButtonServices = ({ points, onClick, label }) => {
       <Line
         points={points}
         color={hover ? "cyan" : "white"}
-        lineWidth={0.8}
+        lineWidth={2}
       />
       <mesh
         geometry={geometry}
@@ -314,6 +316,7 @@ const CraterButtonServices = ({ points, onClick, label }) => {
       />
       {hover && (
         <Text
+        color="#00FFFF"
         position={center.clone().add(textOffset).toArray()}
           fontSize={0.015}
           letterSpacing={1}
@@ -547,52 +550,12 @@ const AnimatedCamera = () => {
   );
 };
 
-const AnimatedEffects = ({ noiseOpacity, vignetteDarkness }) => {
-  return (
-    <>
-      <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
-      <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
-      <Noise opacity={noiseOpacity} />
-      <Vignette eskil={false} offset={0.3} darkness={vignetteDarkness} />
-    </>
-  );
-};
-
-const Effects = () => {
-  const [noiseOpacity, setNoiseOpacity] = useState(1);
-  const [vignetteDarkness, setVignetteDarkness] = useState(3);
-  const startTime = useRef(Date.now());
-
-  const initialNoiseOpacity = 1;
-  const initialVignetteDarkness = 3;
-  const animationDuration = 7000; // in milliseconds
-
-  const animateOpacity = useCallback((delta) => {
-    const elapsedTime = Date.now() - startTime.current;
-    const progress = Math.min(elapsedTime / animationDuration, 1);
-
-    setNoiseOpacity(initialNoiseOpacity - progress * (initialNoiseOpacity - 0.05));
-    setVignetteDarkness(initialVignetteDarkness - progress * (initialVignetteDarkness - 1.1));
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      startTime.current = null;
-    }, animationDuration);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(animateOpacity);
-
-  return <AnimatedEffects noiseOpacity={noiseOpacity} vignetteDarkness={vignetteDarkness} />;
-};
-
 const MoonScene = () => {
   const cameraRef = useRef();
 
   return (
     <Canvas
+    frameloop="demand"
       style={{ position: "absolute", top: 0, left: 0 }}
       useSetBackgroundColor
       size={{ width: window.innerWidth, height: window.innerHeight }}
@@ -601,7 +564,6 @@ const MoonScene = () => {
         gl.setClearColor("black");
       }}
     >
-      <Effects/>
 <AnimatedCamera/>
       <OrbitControls
         camera={cameraRef.current}
@@ -617,7 +579,13 @@ const MoonScene = () => {
       <FlickeringText/>
       <Earth/>
       <Starz />
-
+      <EffectComposer>
+        <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+        <Noise opacity={0.1} />
+        <Vignette eskil={false} offset={0.1} darkness={0.9} />
+      </EffectComposer>
+      <Stats />
     </Canvas>
   );
 };

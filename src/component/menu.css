@@ -48,8 +48,8 @@
   
   .menu-close {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 8px;
+    right: 24px;
     font-size: 36px;
     color: #ffffff;
     cursor: pointer;
@@ -65,9 +65,8 @@
   }
   
   .menu ul li {
-    font-size: 24px;
+    font-size: 32px;
     color: #ffffff;
-    padding: 10px 0;
-    cursor: pointer;
+    padding: 20px 0;
   }
   
