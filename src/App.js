@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MoonScene from "./component/moonScene";
 import Menu from "./component/menu/menu";
-import ArticleList from "./pages/blog";
+import ScrollableBlog from "./pages/scrollBlog";
 import Contact from "./pages/contact";
 import Services from "./pages/services";
 import About from "./pages/about";
@@ -14,7 +14,7 @@ function App() {
         <Menu />
         <Routes>
           <Route path="/" element={<MoonScene />} />
-          <Route path="/blog" element={<ArticleList />} />
+          <Route path="/blog" element={<ScrollableBlog />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />

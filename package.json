@@ -1,6 +1,5 @@
 {
   "name": "chandrastation-threejs",
-  "homepage": "https://chalabi2.github.io/chandrastation-threejs/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

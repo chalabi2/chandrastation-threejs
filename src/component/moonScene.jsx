@@ -585,7 +585,7 @@ const AnimatedCamera = () => {
 
       gsap
       .to(cameraRef.current.position, {
-        duration: 10,
+        duration: 4,
         x: intermediatePosition.x,
         y: intermediatePosition.y,
         z: intermediatePosition.z,
@@ -595,7 +595,7 @@ const AnimatedCamera = () => {
       })
       .then(() => {
         gsap.to(cameraRef.current.position, {
-          duration: 10,
+          duration: 4,
           x: endPosition.x,
           y: endPosition.y,
           z: endPosition.z,
@@ -647,7 +647,7 @@ const MoonScene = () => {
       zIndex: 1000,
       pointerEvents: loading ? "auto" : "none",
       transform: loading ? "scale(1)" : "scale(1.1)",
-      transition: "opacity 8s cubic-bezier(0.23, 1, 0.32, 1), transform 8s cubic-bezier(0.23, 1, 0.32, 1)",
+      transition: "opacity 4s cubic-bezier(0.23, 1, 0.32, 1), transform 4s cubic-bezier(0.23, 1, 0.32, 1)",
     }}
   >
 <LoadingScreen />

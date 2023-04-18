@@ -1,4 +1,3 @@
-import React from "react"
 import {
   Box,
   Heading,
@@ -14,6 +13,8 @@ import {
   Container,
   VStack
 } from "@chakra-ui/react"
+import dark from "../theme"
+
 
 const BlogTags = props => {
   return (
@@ -31,7 +32,7 @@ const BlogTags = props => {
 
 export const BlogAuthor = props => {
   return (
-    <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
+    <HStack useColorMode={dark} marginTop="2" spacing="2" display="flex" alignItems="center">
       <Image
         borderRadius="full"
         boxSize="40px"
@@ -47,7 +48,7 @@ export const BlogAuthor = props => {
 
 const ArticleList = () => {
   return (
-    <Container bgColor="black" maxW={"7xl"} p="12">
+    <Container backgroundColor="black" maxW="full" p="12">
       <Heading as="h1">Stories by Chakra Templates</Heading>
       <Box
         marginTop={{ base: "1", sm: "5" }}
