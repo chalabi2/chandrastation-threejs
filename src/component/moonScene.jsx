@@ -1,50 +1,81 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { CircleBufferGeometry, MeshBasicMaterial, DoubleSide, Vector3, Box3 } from "three";
-import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Stats } from "@react-three/drei";
+import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Stats, Cylinder } from "@react-three/drei";
 import moonModel from "../blender/lune.glb"
 import sunModel from "../blender/sun.glb"
-import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureLoader, CanvasTexture } from 'three';
-import { EffectComposer, Bloom, DepthOfField, Noise, Vignette } from '@react-three/postprocessing';
+import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureLoader, CanvasTexture, CircleBufferGeometry, MeshBasicMaterial, DoubleSide, Vector3, Box3 } from 'three';
+import { EffectComposer, Bloom, DepthOfField, Noise, Vignette, Glitch } from '@react-three/postprocessing';
 import earthTextureURL from '../blender/8k_earth_daymap.jpg'
 import * as THREE from 'three';
 import { gsap } from "gsap";
 import LoadingScreen from "./loading/loading";
+import { useNavigate } from 'react-router-dom';
 
-const FlickeringText = () => {
-  const textRef = useRef();
-  const [opacity, setOpacity] = useState(1);
+function ccccc(children, color) {
+  const scalingFactor = 6
+  const fontSize = 150 * scalingFactor
 
-  useEffect(() => {
-    const flickerInterval = setInterval(() => {
-      setOpacity(Math.random() * 0.5 + 0.5); // Adjust the opacity range for more hologram-like flickering
-    }, 10); // Reduce the interval for a faster flickering effect
-    return () => clearInterval(flickerInterval);
-  }, []);
+  const canvas = document.createElement('canvas')
+  canvas.width = 2048 * scalingFactor;
+  canvas.height = 2048 * scalingFactor;
+  const context = canvas.getContext('2d')
+
+  context.fillStyle = "transparent"
+  context.fillRect(0, 0, canvas.width, canvas.height)
+
+  context.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif`
+  context.textAlign = 'center'
+  context.textBaseline = 'middle'
+  context.fillStyle = color
+  context.fillText(children, 1024* scalingFactor, canvas.height / 2)
+  return canvas
+
+}
+
+function TextRing({ children }) {
+
+  const canvas = useMemo(() => {
+    return ccccc(children, "cyan")
+  }, [children])
+
+
+  const texture = useRef()
+
+  useFrame(({ clock }) => {
+    texture.current.offset.x = clock.getElapsedTime() / 8
+  })
+  
+
+  const cylArgs = [1, 1, 1, 64, 1, true]
 
   return (
-    <Text
-    letterSpacing={1}
-      font='Futura'
-      ref={textRef}
-      position={[0, 2, -2]} // Adjust this to position the text closer to the Moon's surface
-      rotation={[0, 0, 0]} // Rotate the text around the Y-axis by 180 degrees
-      fontSize={0.3} // Make the text smaller
-      color="#00FFFF" // Saturated neon cyan color
-      outlineWidth={0.001}
-      outlineColor="#ffffff"
-      anchorX="center"
-      anchorY="middle"
-      opacity={opacity}
-    >
-      CHANDRA STATION
-    </Text>
-  );
-};
+    <group rotation-y={Math.PI / 2} scale={[2.5, 2.5, 2.5]} position={[0,2,-5]}>
+      {/* <primitive object={target.texture} ref={texture} wrapS={THREE.RepeatWrapping} wrapT={THREE.RepeatWrapping} repeat={[1, 1]} /> */}
+
+      <Cylinder args={cylArgs} side={THREE.FrontSide}>
+        <meshStandardMaterial transparent attach="material" depthWrite={false} depthTest={true}     blendEquation={THREE.AddEquation}
+    blendSrc={THREE.SrcAlphaFactor}
+    blendDst={THREE.OneMinusSrcAlphaFactor}>
+          <canvasTexture
+            attach="map"
+            repeat={[2, 1]}
+            image={canvas}
+            premultiplyAlpha
+            ref={texture}
+            wrapS={THREE.RepeatWrapping}
+            wrapT={THREE.RepeatWrapping}
+            onUpdate={(s) => (s.needsUpdate = true)}
+          />
+        </meshStandardMaterial>
+      </Cylinder>
+    </group>
+  )
+}
 
 
 const CraterButtonBlog = ({ points, onClick, label }) => {
   const [hover, setHover] = useState(false);
+  const navigate = useNavigate();
 
   // Define the spherical coordinates
   const moonRadius = -1.02; // The moon's radius + some offset to make the items hug the moon
@@ -62,6 +93,10 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
 
   const onMouseEnter = () => {
     setHover(true);
+  };
+
+  const handleClick = () => {
+    navigate('/blog');
   };
 
   const onMouseLeave = () => {
@@ -86,7 +121,7 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
       position={position.toArray()}
       onPointerEnter={onMouseEnter}
       onPointerLeave={onMouseLeave}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Line
         points={points}
@@ -116,6 +151,7 @@ const CraterButtonBlog = ({ points, onClick, label }) => {
 
 const CraterButtonContact = ({ points, onClick, label }) => {
   const [hover, setHover] = useState(false);
+  const navigate = useNavigate();
 
   // Define the spherical coordinates
   const moonRadius = 1.01; // The moon's radius + some offset to make the items hug the moon
@@ -133,6 +169,10 @@ const CraterButtonContact = ({ points, onClick, label }) => {
 
   const onMouseEnter = () => {
     setHover(true);
+  };
+
+  const handleClick = () => {
+    navigate('/contact');
   };
 
   const onMouseLeave = () => {
@@ -157,7 +197,7 @@ const CraterButtonContact = ({ points, onClick, label }) => {
       position={position.toArray()}
       onPointerEnter={onMouseEnter}
       onPointerLeave={onMouseLeave}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Line
         points={points}
@@ -190,6 +230,7 @@ const CraterButtonContact = ({ points, onClick, label }) => {
 
 const CraterButtonAbout = ({ points, onClick, label }) => {
   const [hover, setHover] = useState(false);
+  const navigate = useNavigate();
 
   // Define the spherical coordinates
   const moonRadius = -1.01; // The moon's radius + some offset to make the items hug the moon
@@ -207,6 +248,10 @@ const CraterButtonAbout = ({ points, onClick, label }) => {
 
   const onMouseEnter = () => {
     setHover(true);
+  };
+
+  const handleClick = () => {
+    navigate('/about');
   };
 
   const onMouseLeave = () => {
@@ -231,7 +276,7 @@ const CraterButtonAbout = ({ points, onClick, label }) => {
       position={position.toArray()}
       onPointerEnter={onMouseEnter}
       onPointerLeave={onMouseLeave}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Line
         points={points}
@@ -265,6 +310,7 @@ const CraterButtonAbout = ({ points, onClick, label }) => {
 
 const CraterButtonServices = ({ points, onClick, label }) => {
   const [hover, setHover] = useState(false);
+  const navigate = useNavigate();
 
   // Define the spherical coordinates
   const moonRadius = 1.02; // The moon's radius + some offset to make the items hug the moon
@@ -281,6 +327,11 @@ const CraterButtonServices = ({ points, onClick, label }) => {
   const onMouseEnter = () => {
     setHover(true);
   };
+
+  const handleClick = () => {
+    navigate('/services');
+  };
+
 
   const onMouseLeave = () => {
     setHover(false);
@@ -303,7 +354,7 @@ const CraterButtonServices = ({ points, onClick, label }) => {
       position={position.toArray()}
       onPointerEnter={onMouseEnter}
       onPointerLeave={onMouseLeave}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Line
         points={points}
@@ -381,6 +432,7 @@ const Moon = () => {
       position={[0, 0, -5]}
       scale={0.02}
     >
+
 <CraterButtonBlog points={points} onClick={handleClick} label="Blog" />
 <CraterButtonServices points={points} onClick={handleClick} label="Services" />
 <CraterButtonContact points={points} onClick={handleClick} label="Contact" />
@@ -437,8 +489,8 @@ const createRoundTexture = () => {
 };
 
 const Starz = () => {
-  const particleCount = 2000;
-  const radius = 5000;
+  const particleCount = 4000;
+  const radius = 8000;
 
   const positions = new Float32Array(particleCount * 3);
   const colors = new Float32Array(particleCount * 3);
@@ -504,8 +556,9 @@ const Sun = () => {
 
   return (
     <>
-      <primitive object={gltf.scene} position={[0, 0, 3000]} />
+      <primitive object={gltf.scene} position={[0, 0, 5000]} />
       <pointLight
+        castShadow
         color={0xffffff}
         intensity={1}
         distance={10000}
@@ -525,27 +578,40 @@ const AnimatedCamera = () => {
       setAnimationInitialized(true);
 
       const startPosition = new THREE.Vector3(100, 200, -400);
-      const endPosition = new THREE.Vector3(0, 0, 10);
+      const intermediatePosition = new THREE.Vector3(-300, 0, 5);
+      const endPosition = new THREE.Vector3(0, 0, 5);
 
       cameraRef.current.position.copy(startPosition);
 
-      gsap.to(cameraRef.current.position, {
-        duration: 8,
-        x: endPosition.x,
-        y: endPosition.y,
-        z: endPosition.z,
+      gsap
+      .to(cameraRef.current.position, {
+        duration: 10,
+        x: intermediatePosition.x,
+        y: intermediatePosition.y,
+        z: intermediatePosition.z,
         onUpdate: () => {
           cameraRef.current.updateProjectionMatrix();
         },
+      })
+      .then(() => {
+        gsap.to(cameraRef.current.position, {
+          duration: 10,
+          x: endPosition.x,
+          y: endPosition.y,
+          z: endPosition.z,
+          onUpdate: () => {
+            cameraRef.current.updateProjectionMatrix();
+          },
+        });
       });
-    }
-  });
+  }
+});
 
   return (
     <PerspectiveCamera
       ref={cameraRef}
       makeDefault
-      position={[0, 0, 10]}
+      position={[0, 0, 5]}
       far={50000}
     />
   );
@@ -558,12 +624,13 @@ const MoonScene = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000); // Change this value to control the duration of the loading screen
+    }, 2000); // Change this value to control the duration of the loading screen
 
     return () => {
       clearTimeout(timer);
     };
   }, []);
+
 
   return (
     <div
@@ -580,17 +647,16 @@ const MoonScene = () => {
       zIndex: 1000,
       pointerEvents: loading ? "auto" : "none",
       transform: loading ? "scale(1)" : "scale(1.1)",
-      transition: "opacity 20s cubic-bezier(0.23, 1, 0.32, 1), transform 20s cubic-bezier(0.23, 1, 0.32, 1)",
+      transition: "opacity 8s cubic-bezier(0.23, 1, 0.32, 1), transform 8s cubic-bezier(0.23, 1, 0.32, 1)",
     }}
   >
-    {loading && <LoadingScreen />}
+<LoadingScreen />
 
     <Canvas
-    frameloop="demand"
       style={{ position: "absolute", top: 0, left: 0 }}
       useSetBackgroundColor
-      size={{ width: window.innerWidth, height: window.innerHeight }}
-      antialias 
+      size={{ width: window.innerWidth, height: window.innerHeight }} 
+      gl={{ antialias: true }}
       onCreated={({ gl }) => {
         gl.setClearColor("black");
       }}
@@ -603,20 +669,21 @@ const MoonScene = () => {
         enablePan={true}
         panSpeed={0.5}
         minDistance={5}
-        maxDistance={400}
+        maxDistance={2000}
       />
       <Sun />
       <Moon />
-      <FlickeringText/>
       <Earth/>
       <Starz />
+      <TextRing>CHANDRA STATION</TextRing>
+      <Stats />
       <EffectComposer>
         <DepthOfField focusDistance={0} focalLength={0.02} bokehScale={2} height={480} />
-        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={500} />
         <Noise opacity={0.1} />
         <Vignette eskil={false} offset={0.1} darkness={0.9} />
+        <Glitch delay={[2, 30]} duration={[0.6, 0.8]}  />
       </EffectComposer>
-      <Stats />
     </Canvas>
     </div>
   );

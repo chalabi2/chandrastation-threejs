@@ -10,12 +10,12 @@
     align-items: center;
     z-index: 1000;
     opacity: 1;
-    animation: fadeOut 20s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: fadeOut 8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   }
   
   .loading-image {
     width: 300px;
-    animation: fadeOutLogo 15s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    animation: fadeOutLogo 8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   }
   
   @keyframes fadeOut {
@@ -23,10 +23,16 @@
       opacity: 1;
     }
     40% {
-      opacity: 0.5;
+      opacity: 1;
     }
     70% {
-      opacity: 0.1;
+      opacity: 0.9;
+    }
+    72% {
+      opacity: 0.5;
+    }
+    80% {
+      opacity: 0.25;
     }
     100% {
       opacity: 0;

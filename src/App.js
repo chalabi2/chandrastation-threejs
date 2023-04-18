@@ -13,7 +13,7 @@ function App() {
       <div>
         <Menu />
         <Routes>
-          <Route path="/moon-station" element={<MoonScene />} />
+          <Route path="/" element={<MoonScene />} />
           <Route path="/blog" element={<ArticleList />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
