@@ -1,71 +1,4 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  Avatar,
-  useColorMode,
-  Button,
-} from '@chakra-ui/react';
-
-
-const BlogPost = ({ title, author, date, content }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleExpansion = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const snippet = content.split('\n')[0];
-
-  return (
-    <VStack
-    mt={10}
-      spacing={4}
-      borderWidth={1}
-      borderRadius="lg"
-      borderColor="gray.700"
-      p={4}
-      w="100%"
-      overflowWrap="break-word"
-      maxWidth="100%"
-    >
-      <Heading as="h2" size="lg" color="white">
-        {title}
-      </Heading>
-      <HStack overflowWrap="break-word"
-      maxWidth="100%">
-        <Avatar
-          name={author}
-          src={`https://ui-avatars.com/api/?name=${author.replaceAll(' ', '+')}`}
-        />
-        <Text color="gray.400">{author}</Text>
-        <Text color="gray.500">{date}</Text>
-      </HStack>
-      <Box color="gray.300" overflow="auto" wordWrap="break-word" >
-        <Text lineHeight={7} textIndent="initial" textStyle='paragraph' >
-  {isExpanded ? content : snippet}
-</Text>
-      </Box>
-      <Button onClick={handleExpansion} colorScheme="cyan">
-        {isExpanded ? 'Show Less' : 'Read More'}
-      </Button>
-    </VStack>
-  );
-};
-
-const ArticleList = () => {
-  const { colorMode } = useColorMode();
-  const isDark = colorMode === 'dark';
-  const samplePosts = [
-    {
-      title: 'Gravity Bridge Proposal #170',
-      author: 'Chalabi',
-      date: 'April 17, 2023',
-      content: ` With the passing of gravity bridge 
+        With the passing of gravity bridge 
       proposal #170 chandrastation is 
       receiving funding for multiple 
       on-going development projects as outlined in the proposal.
@@ -106,29 +39,5 @@ const ArticleList = () => {
       feel free to follow the github repos to stay up to date on development 
       alongside our newsletters. We are present and participating 
       in discussions in the gravity bridge discord
-      space station: https: //github. Com/chandrastation
-      gravity bridge statistics: https: //github. Com/chalabi2/gravity-dashboard
-      `,
-    }
-  ];
-
-  return (
-    <Box minH="100vh" bg={isDark ? 'black' : 'white'}>
-      <Container maxW="container.md" pt={10}>
-        <VStack spacing={8} w="100%">
-          {samplePosts.map((post, index) => (
-            <BlogPost
-              key={index}
-              title={post.title}
-              author={post.author}
-              date={post.date}
-              content={post.content}
-            />
-          ))}
-        </VStack>
-      </Container>
-    </Box>
-  );
-};
-
-export default ArticleList;
+      space station: https: //github.com/chandrastation
+      gravity bridge statistics: https: //github.com/chalabi2/gravity-dashboard

@@ -59,8 +59,8 @@ import {
                           width="300px"
                           variant="ghost"
                           colorScheme="white"
-                          _hover={{ border: "2px solid teal" }}
-                          leftIcon={<MdEmail color="teal" size="20px" />}
+                          _hover={{ border: "2px solid cyan" }}
+                          leftIcon={<MdEmail color="cyan" size="20px" />}
                         >
                           chalabi@chandrastation.com
                         </Button>
@@ -70,8 +70,8 @@ import {
                           width="200px"
                           variant="ghost"
                           colorScheme="white"
-                          _hover={{ border: "2px solid teal" }}
-                          leftIcon={<MdLocationOn color="teal" size="20px" />}
+                          _hover={{ border: "2px solid cyan" }}
+                          leftIcon={<MdLocationOn color="cyan" size="20px" />}
                         >
                           Phoenix, Arizona
                         </Button>
@@ -88,7 +88,7 @@ import {
                         variant="ghost"
                         size="lg"
                         isRound={true}
-                        _hover={{ bg: "teal" }}
+                        _hover={{ bg: "cyan" }}
                         icon={<BsTwitter size="28px" />}
                       />
                       <IconButton
@@ -96,15 +96,17 @@ import {
                         variant="ghost"
                         size="lg"
                         isRound={true}
-                        _hover={{ bg: "teal" }}
+                        _hover={{ bg: "cyan" }}
                         icon={<BsGithub size="28px" />}
-                      />
+                        >
+                          <Link href="https://github.com/ChandraStation" ></Link>
+                        </IconButton>
                       <IconButton
                         aria-label="discord"
                         variant="ghost"
                         size="lg"
                         isRound={true}
-                        _hover={{ bg: "teal" }}
+                        _hover={{ bg: "cyan" }}
                         icon={<BsDiscord size="28px" />}
                       >
                         <Link href="" ></Link>
@@ -152,7 +154,7 @@ import {
                           color="white"
                             borderColor="gray.300"
                             _hover={{
-                              borderRadius: "teal"
+                              borderRadius: "cyan"
                             }}
                             placeholder="message"
                           />
@@ -160,7 +162,7 @@ import {
                         <FormControl id="name" float="right">
                           <Button
                             variant="solid"
-                            bg="teal"
+                            bg="cyan"
                             color="white"
                             _hover={{}}
                           >

@@ -15,6 +15,7 @@ const theme = extendTheme({
     global: {
       body: {
         bg: "black",
+        fontFamily: 'Futura',
       },
     },
   },

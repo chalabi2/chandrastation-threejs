@@ -5,6 +5,7 @@ import ScrollableBlog from "./pages/scrollBlog";
 import Contact from "./pages/contact";
 import Services from "./pages/services";
 import About from "./pages/about";
+import Products from "./pages/products";
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
+          <Route path="/products" element={<Products />} />
         </Routes>
       </div>
     </Router>

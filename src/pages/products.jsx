@@ -1,6 +1,6 @@
-import { Box, SimpleGrid, Text, Flex, Container, Heading, Card, CardHeader, CardBody, CardFooter, Button } from "@chakra-ui/react"
+import { Spacer, Avatar, Box, SimpleGrid, Text, Flex, Container, Heading, Card, CardHeader, CardBody, CardFooter, Button, HStack, Link } from "@chakra-ui/react"
 
-export default function Services() {
+export default function Products() {
   return (
     <Container maxH="full" maxW="full" centerContent>
       <Box
@@ -27,7 +27,7 @@ export default function Services() {
       color="white"
       justifySelf="center"
       >
-        Services
+        Products
       </Heading>
       </Flex>
       <Flex
@@ -47,15 +47,25 @@ export default function Services() {
   overflowWrap="break-word"
   maxWidth="100%">
     <CardHeader>
-      <Heading size='md'>Snapshots</Heading>
+      <Heading size='md'>Apollo</Heading>
     </CardHeader>
     <CardBody>
-      <Text>Cosmos based snapshots. Pruned and updated daily.</Text>
+      <Text>A fork of ping.pub containing chains we have endpoints for.</Text>
     </CardBody>
     <CardFooter>
+    <HStack>
       <Button
       colorScheme="cyan"
-      >Download</Button>
+      ><Link
+      href="https://apollo.chandrastation.com"
+      >Explore</Link></Button>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Avatar src={"https://apollo.chandrastation.com/logo.png"} mb={2} />
+      </HStack>
     </CardFooter>
   </Card>
   <Card
@@ -71,15 +81,29 @@ export default function Services() {
   maxWidth="100%"
   >
     <CardHeader>
-      <Heading size='md'>Public Endpoints</Heading>
+      <Heading size='md'>Validator Dashboard</Heading>
     </CardHeader>
     <CardBody>
-      <Text>A list of public endpoints to cosmos blockchains.</Text>
+      <Text>Simple tools for validators.</Text>
     </CardBody>
     <CardFooter>
+    <HStack>
       <Button
+      
       colorScheme="cyan"
-      >Query</Button>
+      >
+    <Link
+    href="https://dashboard.chandrastation.com"
+    >Broadcast</Link>
+    </Button>
+ 
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Avatar src={"/dashboard.png"} mb={2} />
+      </HStack>
     </CardFooter>
   </Card>
   <Card
@@ -94,15 +118,25 @@ export default function Services() {
   maxWidth="100%"
   >
     <CardHeader>
-      <Heading size='md'>White Label</Heading>
+      <Heading size='md'>Gravity Statistics</Heading>
     </CardHeader>
     <CardBody>
-      <Text>Get in touch for your infrastructure needs.</Text>
+      <Text>Analytics dashboard for Gravity Bridge</Text>
     </CardBody>
     <CardFooter>
+    <HStack>
       <Button
       colorScheme="cyan"
-      >Instructions</Button>
+      ><Link
+      href="https:/chalabi2.github.io/gravity-dashboard"
+      >Stats</Link></Button>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Avatar src={"/chandra.png"} mb={2} />
+      </HStack>
     </CardFooter>
   </Card>
   <Card
@@ -117,15 +151,25 @@ export default function Services() {
   maxWidth="100%"
   >
     <CardHeader>
-      <Heading size='md'>Advisory</Heading>
+      <Heading size='md'>Space Station</Heading>
     </CardHeader>
     <CardBody>
-      <Text>Need help developing or deploying in the cosmos? Get in touch.</Text>
+      <Text>A fork of Cosmos Station's interchain bridge app maintained by us.</Text>
     </CardBody>
     <CardFooter>
+        <HStack>
       <Button
       colorScheme="cyan"
-      >Contact</Button>
+      ><Link
+      href="https://chandrastation.github.io/space-station"
+      >Bridge</Link></Button>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Spacer/>
+      <Avatar src={"/chandra.png"} mb={2} />
+      </HStack>
     </CardFooter>
   </Card>
 </SimpleGrid>

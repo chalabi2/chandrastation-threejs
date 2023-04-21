@@ -40,6 +40,11 @@ const Menu = () => {
               </Link>
             </li>
             <li>
+              <Link to="/products" onClick={handleToggle}>
+                Products
+              </Link>
+            </li>
+            <li>
               <Link to="/about" onClick={handleToggle}>
                 About
               </Link>
