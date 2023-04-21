@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import ArticleList from "./blog";
 
 const ScrollableBlog = () => {
@@ -7,9 +7,11 @@ const ScrollableBlog = () => {
 
   useEffect(() => {
     const handleScroll = (event) => {
+      event.preventDefault();
+      const normalizedDeltaY = event.deltaY ? event.deltaY * 1 : -event.detail * 100; // This line is changed
       const maxScrollY = contentRef.current.offsetHeight - window.innerHeight;
       setScrollY((prevScrollY) => {
-        const newScrollY = prevScrollY + event.deltaY * 0.5;
+        const newScrollY = prevScrollY + normalizedDeltaY;
         return Math.min(Math.max(newScrollY, 0), maxScrollY);
       });
     };

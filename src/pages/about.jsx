@@ -10,15 +10,9 @@ import {
 
 export default function About() {
   return (
-    <Flex justifyContent="center" width="100%" height="100%" align="center">
-      <VStack align="center" position="fixed" left={4} height="100%" py={500}>
-        <Text left={0} fontSize={{ base: "xl", md: "7xl" }} color="cyan" transform="rotate(-90deg)">
-          Chandra Station Chandra Station Chandra Station
-        </Text>
-      </VStack>
       <Stack
         bg={useColorModeValue("black", "black")}
-        py={300}
+        py={450}
         px={8}
         spacing={{ base: 8, md: 10 }}
         align={"center"}
@@ -49,11 +43,5 @@ export default function About() {
           <Avatar src={"/chandra.png"} mb={2} />
         </Box>
       </Stack>
-      <VStack align="flex-end" position="fixed" left={1200} height="100%" py={500}>
-        <Text fontSize={{ base: "xl", md: "7xl" }} color="cyan" transform="rotate(90deg)">
-          Chandra Station Chandra Station Chandra station
-        </Text>
-      </VStack>
-    </Flex>
   );
 }

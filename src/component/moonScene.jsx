@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { PerspectiveCamera, OrbitControls, useGLTF, Text, Line, Stats, Cylinder } from "@react-three/drei";
 import moonModel from "../blender/lune.glb"
@@ -7,7 +7,7 @@ import { BufferGeometry, Float32BufferAttribute, PointsMaterial, Color, TextureL
 import { EffectComposer, Bloom, DepthOfField, Noise, Vignette, Glitch } from '@react-three/postprocessing';
 import earthTextureURL from '../blender/8k_earth_daymap.jpg'
 import * as THREE from 'three';
-import { gsap } from "gsap";
+// import { gsap } from "gsap";
 import LoadingScreen from "./loading/loading";
 import { useNavigate } from 'react-router-dom';
 
@@ -569,53 +569,53 @@ const Sun = () => {
   );
 };
 
-const AnimatedCamera = () => {
-  const cameraRef = useRef();
-  const [animationInitialized, setAnimationInitialized] = useState(false);
+// const AnimatedCamera = () => {
+//   const cameraRef = useRef();
+//   const [animationInitialized, setAnimationInitialized] = useState(false);
 
-  useFrame(() => {
-    if (cameraRef.current && !animationInitialized) {
-      setAnimationInitialized(true);
+//   useFrame(() => {
+//     if (cameraRef.current && !animationInitialized) {
+//       setAnimationInitialized(true);
 
-      const startPosition = new THREE.Vector3(100, 200, -400);
-      const intermediatePosition = new THREE.Vector3(-300, 0, 5);
-      const endPosition = new THREE.Vector3(0, 0, 5);
+//       const startPosition = new THREE.Vector3(100, 200, -400);
+//       const intermediatePosition = new THREE.Vector3(-300, 0, 5);
+//       const endPosition = new THREE.Vector3(0, 0, 5);
 
-      cameraRef.current.position.copy(startPosition);
+//       cameraRef.current.position.copy(startPosition);
 
-      gsap
-      .to(cameraRef.current.position, {
-        duration: 4,
-        x: intermediatePosition.x,
-        y: intermediatePosition.y,
-        z: intermediatePosition.z,
-        onUpdate: () => {
-          cameraRef.current.updateProjectionMatrix();
-        },
-      })
-      .then(() => {
-        gsap.to(cameraRef.current.position, {
-          duration: 4,
-          x: endPosition.x,
-          y: endPosition.y,
-          z: endPosition.z,
-          onUpdate: () => {
-            cameraRef.current.updateProjectionMatrix();
-          },
-        });
-      });
-  }
-});
+//       gsap
+//       .to(cameraRef.current.position, {
+//         duration: 4,
+//         x: intermediatePosition.x,
+//         y: intermediatePosition.y,
+//         z: intermediatePosition.z,
+//         onUpdate: () => {
+//           cameraRef.current.updateProjectionMatrix();
+//         },
+//       })
+//       .then(() => {
+//         gsap.to(cameraRef.current.position, {
+//           duration: 4,
+//           x: endPosition.x,
+//           y: endPosition.y,
+//           z: endPosition.z,
+//           onUpdate: () => {
+//             cameraRef.current.updateProjectionMatrix();
+//           },
+//         });
+//       });
+//   }
+// });
 
-  return (
-    <PerspectiveCamera
-      ref={cameraRef}
-      makeDefault
-      position={[0, 0, 5]}
-      far={50000}
-    />
-  );
-};
+//   return (
+//     <PerspectiveCamera
+//       ref={cameraRef}
+//       makeDefault
+//       position={[0, 0, 5]}
+//       far={50000}
+//     />
+//   );
+// };
 
 const MoonScene = () => {
   const cameraRef = useRef();
@@ -624,7 +624,7 @@ const MoonScene = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Change this value to control the duration of the loading screen
+    }, 2500); // Change this value to control the duration of the loading screen
 
     return () => {
       clearTimeout(timer);
@@ -646,8 +646,8 @@ const MoonScene = () => {
       alignItems: "center",
       zIndex: 1000,
       pointerEvents: loading ? "auto" : "none",
-      transform: loading ? "scale(1)" : "scale(1.1)",
-      transition: "opacity 4s cubic-bezier(0.23, 1, 0.32, 1), transform 4s cubic-bezier(0.23, 1, 0.32, 1)",
+      transform: loading ? "scale(1)" : "scale(1.5)",
+      transition: "opacity 10s cubic-bezier(0.23, 1, 0.32, 1), transform 10s cubic-bezier(0.23, 1, 0.32, 1)",
     }}
   >
 <LoadingScreen />
@@ -661,7 +661,12 @@ const MoonScene = () => {
         gl.setClearColor("black");
       }}
     >
-<AnimatedCamera/>
+    <PerspectiveCamera
+      ref={cameraRef}
+      makeDefault
+      position={[0, 0, 6]}
+      far={50000}
+    />
       <OrbitControls
         camera={cameraRef.current}
         target={[0, 0, -5]}

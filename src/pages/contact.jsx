@@ -19,17 +19,15 @@ import {
     Link
   } from "@chakra-ui/react"
   import {
-    MdPhone,
     MdEmail,
     MdLocationOn,
-    MdFacebook,
     MdOutlineEmail,
   } from "react-icons/md"
   import { BsGithub, BsDiscord, BsPerson, BsTwitter } from "react-icons/bs"
   
   export default function Contact() {
     return (
-      <Container pt={20} bg="black" maxW="full" maxH="full" mt={0} centerContent>
+      <Container pt={80} bg="black" maxW="full" maxH="full" mt={0} centerContent>
         <Flex>
           <Box
             bg="black"

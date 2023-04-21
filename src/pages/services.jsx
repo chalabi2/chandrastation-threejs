@@ -26,7 +26,7 @@ export default function Services() {
   return (
     <Container maxH="full" maxW="full" centerContent>
       <Box
-      mt={40}
+      mt={80}
       boxSize="2xl"
       width="4xl"
       bgColor="black"
