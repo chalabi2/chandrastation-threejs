@@ -1,18 +1,16 @@
 import {
   Avatar,
   Box,
-  Flex,
   Stack,
   Text,
-  useColorModeValue,
-  VStack,
+  useColorModeValue
 } from "@chakra-ui/react";
 
 export default function About() {
   return (
       <Stack
         bg={useColorModeValue("black", "black")}
-        py={450}
+        py={250}
         px={8}
         spacing={{ base: 8, md: 10 }}
         align={"center"}

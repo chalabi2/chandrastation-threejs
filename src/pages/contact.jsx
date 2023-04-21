@@ -27,16 +27,23 @@ import {
   
   export default function Contact() {
     return (
-      <Container pt={80} bg="black" maxW="full" maxH="full" mt={0} centerContent>
-        <Flex>
+      <Container
+       bg="black" minH="100vh" height="full" maxW="full" maxH="full" centerContent>
+        <Flex
+                  mt={20}
+        alignItems="center"  justifyContent="center" w="100%" h="100%"
+        >
           <Box
+          borderWidth={1}
+          borderRadius="lg"
+          borderColor="gray.700"
             bg="black"
             color="white"
-            borderRadius="lg"
+            alignItems="center"
             m={{ sm: 4, md: 16, lg: 10 }}
             p={{ sm: 5, md: 5, lg: 16 }}
           >
-            <Box p={4}>
+            <Box justifyContent="center" p={4}>
               <Wrap spacing={{ base: 20, sm: 3, md: 5, lg: 20 }}>
                 <WrapItem>
                   <Box>
@@ -51,9 +58,9 @@ import {
                           height="48px"
                           width="300px"
                           variant="ghost"
-                          color="#DCE2FF"
-                          _hover={{ border: "2px solid #1C6FEB" }}
-                          leftIcon={<MdEmail color="#1970F1" size="20px" />}
+                          colorScheme="white"
+                          _hover={{ border: "2px solid teal" }}
+                          leftIcon={<MdEmail color="teal" size="20px" />}
                         >
                           chalabi@chandrastation.com
                         </Button>
@@ -62,9 +69,9 @@ import {
                           height="48px"
                           width="200px"
                           variant="ghost"
-                          color="#DCE2FF"
-                          _hover={{ border: "2px solid #1C6FEB" }}
-                          leftIcon={<MdLocationOn color="#1970F1" size="20px" />}
+                          colorScheme="white"
+                          _hover={{ border: "2px solid teal" }}
+                          leftIcon={<MdLocationOn color="teal" size="20px" />}
                         >
                           Phoenix, Arizona
                         </Button>
@@ -81,7 +88,7 @@ import {
                         variant="ghost"
                         size="lg"
                         isRound={true}
-                        _hover={{ bg: "#0D74FF" }}
+                        _hover={{ bg: "teal" }}
                         icon={<BsTwitter size="28px" />}
                       />
                       <IconButton
@@ -89,7 +96,7 @@ import {
                         variant="ghost"
                         size="lg"
                         isRound={true}
-                        _hover={{ bg: "#0D74FF" }}
+                        _hover={{ bg: "teal" }}
                         icon={<BsGithub size="28px" />}
                       />
                       <IconButton
@@ -97,7 +104,7 @@ import {
                         variant="ghost"
                         size="lg"
                         isRound={true}
-                        _hover={{ bg: "#0D74FF" }}
+                        _hover={{ bg: "teal" }}
                         icon={<BsDiscord size="28px" />}
                       >
                         <Link href="" ></Link>
@@ -106,35 +113,46 @@ import {
                   </Box>
                 </WrapItem>
                 <WrapItem>
-                  <Box bg="white" borderRadius="lg">
+                  <Box 
+                  
+                  borderWidth={1}
+      borderRadius="lg"
+      borderColor="gray.700">
                     <Box m={8} color="#0B0E3F">
                       <VStack spacing={5}>
                         <FormControl id="name">
-                          <FormLabel>Your Name</FormLabel>
-                          <InputGroup borderColor="#E0E1E7">
+                          <FormLabel
+                          color="white"
+                          >Your Name</FormLabel>
+                          <InputGroup borderColor="white">
                             <InputLeftElement
                               pointerEvents="none"
-                              children={<BsPerson color="gray.800" />}
+                              children={<BsPerson color="white" />}
                             />
-                            <Input type="text" size="md" />
+                            <Input color="white" type="text" size="md" />
                           </InputGroup>
                         </FormControl>
                         <FormControl id="name">
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel
+                          color="white"
+                          >Email</FormLabel>
                           <InputGroup borderColor="#E0E1E7">
                             <InputLeftElement
                               pointerEvents="none"
-                              children={<MdOutlineEmail color="gray.800" />}
+                              children={<MdOutlineEmail color="white" />}
                             />
-                            <Input type="text" size="md" />
+                            <Input color="white" type="text" size="md" />
                           </InputGroup>
                         </FormControl>
                         <FormControl id="name">
-                          <FormLabel>Message</FormLabel>
+                          <FormLabel
+                          color="white"
+                          >Message</FormLabel>
                           <Textarea
+                          color="white"
                             borderColor="gray.300"
                             _hover={{
-                              borderRadius: "gray.300"
+                              borderRadius: "teal"
                             }}
                             placeholder="message"
                           />
@@ -142,7 +160,7 @@ import {
                         <FormControl id="name" float="right">
                           <Button
                             variant="solid"
-                            bg="#0D74FF"
+                            bg="teal"
                             color="white"
                             _hover={{}}
                           >

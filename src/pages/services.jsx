@@ -1,40 +1,26 @@
-import { Box, SimpleGrid, Icon, Text, Stack, Flex, Container, Grid, Heading, Card, CardHeader, CardBody, CardFooter, Button } from "@chakra-ui/react"
-import { FcAssistant, FcDonate, FcInTransit } from "react-icons/fc"
-
-const Feature = ({ title, text, icon }) => {
-  return (
-    <Stack>
-      <Flex
-        w={16}
-        h={16}
-        align={"center"}
-        justify={"center"}
-        color={"black"}
-        rounded={"full"}
-        bg={"gray.100"}
-        mb={1}
-      >
-        {icon}
-      </Flex>
-      <Text fontWeight={600}>{title}</Text>
-      <Text color={"gray.600"}>{text}</Text>
-    </Stack>
-  )
-}
+import { Box, SimpleGrid, Text, Flex, Container, Heading, Card, CardHeader, CardBody, CardFooter, Button } from "@chakra-ui/react"
 
 export default function Services() {
   return (
     <Container maxH="full" maxW="full" centerContent>
       <Box
-      mt={80}
-      boxSize="2xl"
+      spacing={4}
+      mt={20}
+      borderWidth={1}
+      borderRadius="lg"
+      borderColor="gray.700"
+      p={4}
+      w="100%"
+      overflowWrap="break-word"
+      maxWidth="100%"
+      verticalAlign="center"
+      boxSize="3xl"
+      maxH="100vh"
       width="4xl"
       bgColor="black"
-      borderRadius={8}
       
       >
         <Flex
-        mt={4}
         justifyContent="center"
         >
       <Heading
@@ -45,11 +31,20 @@ export default function Services() {
       </Heading>
       </Flex>
       <Flex
-      pt={25}
+
       justifyContent="center"
       >
       <SimpleGrid mt={15} spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
-  <Card>
+  <Card
+  spacing={4}
+  borderWidth={1}
+  borderRadius="lg"
+  borderColor="gray.700"
+  bgColor="black"
+  p={4}
+  w="100%"
+  overflowWrap="break-word"
+  maxWidth="100%">
     <CardHeader>
       <Heading size='md'>Snapshots</Heading>
     </CardHeader>
@@ -57,10 +52,22 @@ export default function Services() {
       <Text>Cosmos based snapshots. Pruned and updated daily.</Text>
     </CardBody>
     <CardFooter>
-      <Button>Download</Button>
+      <Button
+      colorScheme="teal"
+      >Download</Button>
     </CardFooter>
   </Card>
-  <Card>
+  <Card
+  spacing={4}
+  borderWidth={1}
+  borderRadius="lg"
+  borderColor="gray.700"
+  bgColor="black"
+  p={4}
+  w="100%"
+  overflowWrap="break-word"
+  maxWidth="100%"
+  >
     <CardHeader>
       <Heading size='md'>Public Endpoints</Heading>
     </CardHeader>
@@ -68,10 +75,22 @@ export default function Services() {
       <Text>A list of public endpoints to cosmos blockchains.</Text>
     </CardBody>
     <CardFooter>
-      <Button>Query</Button>
+      <Button
+      colorScheme="teal"
+      >Query</Button>
     </CardFooter>
   </Card>
-  <Card>
+  <Card
+  spacing={4}
+  borderWidth={1}
+  borderRadius="lg"
+  borderColor="gray.700"
+  bgColor="black"
+  p={4}
+  w="100%"
+  overflowWrap="break-word"
+  maxWidth="100%"
+  >
     <CardHeader>
       <Heading size='md'>White Label</Heading>
     </CardHeader>
@@ -79,10 +98,22 @@ export default function Services() {
       <Text>Get in touch for your infrastructure needs.</Text>
     </CardBody>
     <CardFooter>
-      <Button>Instructions</Button>
+      <Button
+      colorScheme="teal"
+      >Instructions</Button>
     </CardFooter>
   </Card>
-  <Card>
+  <Card
+  spacing={4}
+  borderWidth={1}
+  borderRadius="lg"
+  borderColor="gray.700"
+  bgColor="black"
+  p={4}
+  w="100%"
+  overflowWrap="break-word"
+  maxWidth="100%"
+  >
     <CardHeader>
       <Heading size='md'>Advisory</Heading>
     </CardHeader>
@@ -90,7 +121,9 @@ export default function Services() {
       <Text>Need help developing or deploying in the cosmos? Get in touch.</Text>
     </CardBody>
     <CardFooter>
-      <Button>Contact</Button>
+      <Button
+      colorScheme="teal"
+      >Contact</Button>
     </CardFooter>
   </Card>
 </SimpleGrid>
